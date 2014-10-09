@@ -1,0 +1,6 @@
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\GoodsSearcher\GoodsSearcher\bin\Debug\GoodsSearcher.exe.config
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\GoodsSearcher\GoodsSearcher\bin\Debug\GoodsSearcher.exe
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\GoodsSearcher\GoodsSearcher\bin\Debug\GoodsSearcher.pdb
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\GoodsSearcher\GoodsSearcher\obj\Debug\GoodsSearcher.csprojResolveAssemblyReference.cache
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\GoodsSearcher\GoodsSearcher\obj\Debug\GoodsSearcher.exe
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\GoodsSearcher\GoodsSearcher\obj\Debug\GoodsSearcher.pdb

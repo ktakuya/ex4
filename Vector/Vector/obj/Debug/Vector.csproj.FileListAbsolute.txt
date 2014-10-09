@@ -1,0 +1,6 @@
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Vector\Vector\bin\Debug\Vector.exe.config
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Vector\Vector\obj\Debug\Vector.csprojResolveAssemblyReference.cache
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Vector\Vector\bin\Debug\Vector.exe
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Vector\Vector\bin\Debug\Vector.pdb
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Vector\Vector\obj\Debug\Vector.exe
+C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Vector\Vector\obj\Debug\Vector.pdb
