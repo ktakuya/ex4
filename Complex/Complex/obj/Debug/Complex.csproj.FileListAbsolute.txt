@@ -1,6 +1,0 @@
-C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Complex\Complex\bin\Debug\Complex.exe.config
-C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Complex\Complex\bin\Debug\Complex.exe
-C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Complex\Complex\bin\Debug\Complex.pdb
-C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Complex\Complex\obj\Debug\Complex.csprojResolveAssemblyReference.cache
-C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Complex\Complex\obj\Debug\Complex.exe
-C:\Users\a0124973\Documents\ensyu4\personal\kuwahara\Complex\Complex\obj\Debug\Complex.pdb

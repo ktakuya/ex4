@@ -1,6 +1,0 @@
-c:\users\a0124973\documents\visual studio 2013\Projects\TFVectorGenerator\TFVectorGenerator\bin\Debug\TFVectorGenerator.exe.config
-c:\users\a0124973\documents\visual studio 2013\Projects\TFVectorGenerator\TFVectorGenerator\obj\Debug\TFVectorGenerator.csprojResolveAssemblyReference.cache
-c:\users\a0124973\documents\visual studio 2013\Projects\TFVectorGenerator\TFVectorGenerator\bin\Debug\TFVectorGenerator.exe
-c:\users\a0124973\documents\visual studio 2013\Projects\TFVectorGenerator\TFVectorGenerator\bin\Debug\TFVectorGenerator.pdb
-c:\users\a0124973\documents\visual studio 2013\Projects\TFVectorGenerator\TFVectorGenerator\obj\Debug\TFVectorGenerator.exe
-c:\users\a0124973\documents\visual studio 2013\Projects\TFVectorGenerator\TFVectorGenerator\obj\Debug\TFVectorGenerator.pdb
