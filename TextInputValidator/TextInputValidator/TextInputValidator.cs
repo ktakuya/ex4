@@ -9,6 +9,8 @@ namespace TextInputValidator
 {
     /// <summary>
     /// いろいろなテキスト入力に対する検証を行えるクラス
+    /// 
+    /// 優 [tanaka]
     /// </summary>
     class TextInputValidator
     {

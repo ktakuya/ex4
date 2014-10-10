@@ -9,6 +9,8 @@ namespace Complex
 {
     /// <summary>
     /// 複素数をあらわすクラス
+    /// 
+    /// 優 [tanaka]
     /// </summary>
     class Complex
     {

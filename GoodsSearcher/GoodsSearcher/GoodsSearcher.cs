@@ -9,6 +9,9 @@ using System.IO;
 
 namespace GoodsSearcher
 {
+    /// <summary>
+    /// 優 [tanaka]
+    /// </summary>
     class GoodsSearcher
     {
         /// <summary>

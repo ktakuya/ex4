@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Vector
 {
+    /// <summary>
+    /// 優 [tanaka]
+    /// </summary>
     class Vector
     {
         private int _dimension;
