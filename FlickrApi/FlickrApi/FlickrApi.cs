@@ -70,6 +70,26 @@ namespace FlickrApi
         private void GetFlickrPhotos(string tag){
             string url = PhotosSearchUrlBuilder(tag);
 
+            // urlからXmlを取得
+            XmlDocument xml = GetXmlDocumentFromUrl(url);
+
+            // photoタグをまわしてownerとtagsを取得してくる
+            // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0].InnerText);
+            XmlNodeList photos = xml.GetElementsByTagName("photo");
+            foreach (XmlNode photo in photos)
+            {
+                // [0] : id, [1] : owner, [2] : secret, [3] : server, [4] : farm, [5] : title, 
+
+            }
+        }
+
+        /// <summary>
+        /// urlからxmlを取得してそのまま返すメソッド
+        /// </summary>
+        /// <param name="url">取得してくるurl</param>
+        /// <returns>取得したxml</returns>
+        private XmlDocument GetXmlDocumentFromUrl(string url)
+        {
             XmlDocument xml = new XmlDocument();
 
             // Httpによる要求を生成
@@ -83,14 +103,7 @@ namespace FlickrApi
                 xml.Load(st);
             }
 
-            // photoタグをまわしてownerとtagsを取得してくる
-            // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0].InnerText);
-            XmlNodeList photos = xml.GetElementsByTagName("photo");
-            foreach (XmlNode photo in photos)
-            {
-                // [0] : id, [1] : owner, [2] : secret, [3] : server, [4] : farm, [5] : title, 
-
-            }
+            return xml;
         }
 
         /// <summary>
@@ -107,6 +120,7 @@ namespace FlickrApi
         private List<string> GetTags(string id)
         {
             List<string> result = new List<string>();
+
             return result;
         }
 
