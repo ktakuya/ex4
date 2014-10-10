@@ -42,8 +42,21 @@ namespace FlickrApi
         /// <returns></returns>
         public List<FlickrImage> Search(string tags)
         {
-            
+            string s = SplitTags(tags);
             return _flickrImageList;
+        }
+
+        /// <summary>
+        /// デリミタが空白できた場合apiに合うように結合するメソッド
+        /// </summary>
+        /// <param name="tags">"a b c"のような文字列</param>
+        /// <returns>"a,b,c"のような文字列</returns>
+        private string SplitTags(string tags)
+        {
+            string result = "";
+            string[] split = tags.Split(new char[] { ' ', '　' }, StringSplitOptions.RemoveEmptyEntries);
+            result = String.Join(",", split);
+            return result;
         }
 
         /// <summary>
@@ -74,10 +87,11 @@ namespace FlickrApi
         /// </summary>
         /// <returns>url</returns>
         private string PhotosSearchUrlBuilder() {
-            return string.Format("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}&format=xmlrpc&tags={1}", 
+            return string.Format("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}&format=rest&tags={1}", 
                                                 _apiKey,
                                                 _tags);
         }
+
     }
 
     /// <summary>
