@@ -46,6 +46,7 @@ namespace FlickrApi
         public List<FlickrImage> Search(string tags)
         {
             // コンマ区切りの文字列を生成する
+            // FIXME: 今のところ空白区切りでタグが指定されるのを前提にしている
             string tag = SplitTags(tags);
             GetFlickrPhotos(tag);
             return _flickrImageList;
@@ -75,13 +76,19 @@ namespace FlickrApi
 
             // photoタグをまわしてownerとtagsを取得してくる
             // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0].InnerText);
-            Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0]);
+            // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0]);
             XmlNodeList photos = xml.GetElementsByTagName("photo");
-            List<string> a = GetTags(photos[0].Attributes[0].InnerText);
+            // List<string> a = GetTags(photos[0].Attributes[0].InnerText);
             foreach (XmlNode photo in photos)
             {
                 // [0] : id, [1] : owner, [2] : secret, [3] : server, [4] : farm, [5] : title, 
+                XmlAttributeCollection xac = photo.Attributes;
+                string photoId = xac.GetNamedItem("id").Value;
+                string ownerId = xac.GetNamedItem("owner").Value;
 
+                // photo_id から タグを取得する
+                List<string> tags = GetTags(photoId);
+                string ownerName = GetOwner(ownerId);
             }
         }
 
@@ -109,11 +116,13 @@ namespace FlickrApi
         }
 
         /// <summary>
-        /// 
+        /// useridからuserについての詳細を取得してくるメソッド
         /// </summary>
-        private void GetOwner()
+        /// <param name="userid">user_id</param>
+        /// <returns></returns>
+        private string GetOwner(string userid)
         {
-
+            string url = 
         }
 
         /// <summary>
@@ -161,6 +170,17 @@ namespace FlickrApi
                                                 photoid);
         }
 
+        /// <summary>
+        /// flickr.people.getinfo 用のurlを生成するメソッド
+        /// </summary>
+        /// <param name="userid">userid</param>
+        /// <returns>url</returns>
+        private string PeopleGetInfoUrlBuilder(string userid)
+        {
+            return string.Format("https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key={0}&user_id={1}&format=rest",
+                                                _apiKey,
+                                                userid);
+        }
     }
 
     /// <summary>
