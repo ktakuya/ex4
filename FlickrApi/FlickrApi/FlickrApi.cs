@@ -15,7 +15,62 @@ namespace FlickrApi
          * 画像に付与されているタグの検索は flickr.tags.getListPhoto
          */
 
+        private string _apiKey;
+        private List<FlickrImage> _flickrImageList;
+        private Dictionary<string, string> _ownerNameById;
+        private Dictionary<string, List<string>> _tagsById;
+        private Dictionary<string, string> _imageUrlById;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="key">APIキー</param>
+        public FlickrApi(string key)
+        {
+            _apiKey = key;
+            _flickrImageList = new List<FlickrImage>();
+            _ownerNameById = new Dictionary<string, string>();
+            _tagsById = new Dictionary<string, List<string>>();
+            _imageUrlById = new Dictionary<string, string>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public List<FlickrImage> Search(string tags)
+        {
+            
+            return _flickrImageList;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void GetFlickrPhotos(){
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void GetOwner()
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void GetTags()
+        {
+
+        }
+
+        private string PhotosSearchUrlBuilder() {
+            return string.Format("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}&format=");
+        }
     }
 
     /// <summary>
