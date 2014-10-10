@@ -16,6 +16,7 @@ namespace FlickrApi
          */
 
         private string _apiKey;
+        private string _tags;
         private List<FlickrImage> _flickrImageList;
         private Dictionary<string, string> _ownerNameById;
         private Dictionary<string, List<string>> _tagsById;
@@ -68,8 +69,14 @@ namespace FlickrApi
 
         }
 
+        /// <summary>
+        /// flickr.photos.search 用のurlを生成するメソッド
+        /// </summary>
+        /// <returns>url</returns>
         private string PhotosSearchUrlBuilder() {
-            return string.Format("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}&format=");
+            return string.Format("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}&format=xmlrpc&tags={1}", 
+                                                _apiKey,
+                                                _tags);
         }
     }
 
