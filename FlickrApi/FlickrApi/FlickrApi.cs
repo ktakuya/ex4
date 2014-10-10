@@ -9,6 +9,9 @@ using System.Xml;
 
 namespace FlickrApi
 {
+    /// <summary>
+    /// Flickr API を利用した写真検索クラス
+    /// </summary>
     class FlickrApi
     {
         /*
@@ -19,11 +22,6 @@ namespace FlickrApi
          */
 
         private string _apiKey;
-        private List<FlickrImage> _flickrImageList;
-        private Dictionary<string, string> _ownerNameById;
-        private Dictionary<string, List<string>> _tagsById;
-        private Dictionary<string, string> _imageUrlById;
-        private Dictionary<string, string> _titleById;
 
         /// <summary>
         /// コンストラクタ
@@ -32,24 +30,20 @@ namespace FlickrApi
         public FlickrApi(string key)
         {
             _apiKey = key;
-            _flickrImageList = new List<FlickrImage>();
-            _ownerNameById = new Dictionary<string, string>();
-            _tagsById = new Dictionary<string, List<string>>();
-            _imageUrlById = new Dictionary<string, string>();
         }
 
         /// <summary>
-        /// 
+        /// 検索する
         /// </summary>
-        /// <param name="tags"></param>
-        /// <returns></returns>
+        /// <param name="tags">スペース区切りのタグ</param>
+        /// <returns>FlickrImageのリスト</returns>
         public List<FlickrImage> Search(string tags)
         {
             // コンマ区切りの文字列を生成する
             // FIXME: 今のところ空白区切りでタグが指定されるのを前提にしている
             string tag = SplitTags(tags);
-            GetFlickrPhotos(tag);
-            return _flickrImageList;
+            List<FlickrImage> result = GetFlickrPhotos(tag);
+            return result;
         }
 
         /// <summary>
@@ -65,36 +59,47 @@ namespace FlickrApi
             return result;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void GetFlickrPhotos(string tag){
+       /// <summary>
+       /// FlickrImageのリストを生成する
+       /// またここからタグ、ユーザ名、タイトル、画像URLを生成するメソッドを呼び出す
+       /// </summary>
+       /// <param name="tag">tag</param>
+       /// <returns>FlickrImageのリスト</returns>
+        private List<FlickrImage> GetFlickrPhotos(string tag){
+            // 返すListを生成する
+            List<FlickrImage> flickrImageList = new List<FlickrImage>();
+
             string url = PhotosSearchUrlBuilder(tag);
 
             // urlからXmlを取得
             XmlDocument xml = GetXmlDocumentFromUrl(url);
 
             // photoタグをまわしてownerとtagsを取得してくる
-            // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0].InnerText);
-            // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0]);
             XmlNodeList photos = xml.GetElementsByTagName("photo");
-            // List<string> a = GetTags(photos[0].Attributes[0].InnerText);
             foreach (XmlNode photo in photos)
             {
                 // attributeからidとownerを取り出してきてFlickrImageインスタンスを生成する
                 XmlAttributeCollection xac = photo.Attributes;
                 string photoId = xac.GetNamedItem("id").Value;
                 string ownerId = xac.GetNamedItem("owner").Value;
+                string farmId = xac.GetNamedItem("farm").Value;
+                string serverId = xac.GetNamedItem("server").Value;
+                string title = xac.GetNamedItem("title").Value;
+                string secret = xac.GetNamedItem("secret").Value;
 
                 // photo_id から タグを取得する
                 List<string> tags = GetTags(photoId);
                 
                 // useridからusernameを取り出す
                 string userName = GetOwner(ownerId);
-                
 
+                // 画像のURLを生成する
+                string imageUrl = PhotoSourceUrlBuilder(farmId, serverId, photoId, secret);
+
+                flickrImageList.Add(new FlickrImage(imageUrl, userName, title, tags));
             }
-            
+
+            return flickrImageList;
         }
 
         /// <summary>
