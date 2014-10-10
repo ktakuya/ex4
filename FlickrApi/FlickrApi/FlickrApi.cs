@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace FlickrApi
 {
@@ -16,11 +19,11 @@ namespace FlickrApi
          */
 
         private string _apiKey;
-        private string _tags;
         private List<FlickrImage> _flickrImageList;
         private Dictionary<string, string> _ownerNameById;
         private Dictionary<string, List<string>> _tagsById;
         private Dictionary<string, string> _imageUrlById;
+        private Dictionary<string, string> _titleById;
 
         /// <summary>
         /// コンストラクタ
@@ -42,7 +45,9 @@ namespace FlickrApi
         /// <returns></returns>
         public List<FlickrImage> Search(string tags)
         {
-            string s = SplitTags(tags);
+            // コンマ区切りの文字列を生成する
+            string tag = SplitTags(tags);
+            GetFlickrPhotos(tag);
             return _flickrImageList;
         }
 
@@ -62,8 +67,30 @@ namespace FlickrApi
         /// <summary>
         /// 
         /// </summary>
-        private void GetFlickrPhotos(){
+        private void GetFlickrPhotos(string tag){
+            string url = PhotosSearchUrlBuilder(tag);
 
+            XmlDocument xml = new XmlDocument();
+
+            // Httpによる要求を生成
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+
+            // 要求を送信し、応答を受信
+            using (HttpWebResponse res = (HttpWebResponse)req.GetResponse())
+            using (Stream st = res.GetResponseStream())
+            {
+                // XMLを読み込み xmlに書き込まれる
+                xml.Load(st);
+            }
+
+            // photoタグをまわしてownerとtagsを取得してくる
+            // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0].InnerText);
+            XmlNodeList photos = xml.GetElementsByTagName("photo");
+            foreach (XmlNode photo in photos)
+            {
+                // [0] : id, [1] : owner, [2] : secret, [3] : server, [4] : farm, [5] : title, 
+
+            }
         }
 
         /// <summary>
@@ -77,19 +104,32 @@ namespace FlickrApi
         /// <summary>
         /// 
         /// </summary>
-        private void GetTags()
+        private List<string> GetTags(string id)
         {
-
+            List<string> result = new List<string>();
+            return result;
         }
 
         /// <summary>
         /// flickr.photos.search 用のurlを生成するメソッド
         /// </summary>
         /// <returns>url</returns>
-        private string PhotosSearchUrlBuilder() {
+        private string PhotosSearchUrlBuilder(string tag) {
             return string.Format("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}&format=rest&tags={1}", 
                                                 _apiKey,
-                                                _tags);
+                                                tag);
+        }
+
+        /// <summary>
+        /// flickr.tags.getListPhoto 用のurlを生成するメソッド
+        /// </summary>
+        /// <param name="photoid">photo_id</param>
+        /// <returns>url</returns>
+        private string TagsGetListPhotoUrlBuilder(string photoid)
+        {
+            return string.Format("https://api.flickr.com/services/rest/?method=flickr.tags.getListPhoto&api_key={0}&photo_id={1}&format=rest", 
+                                                _apiKey,
+                                                photoid);
         }
 
     }
