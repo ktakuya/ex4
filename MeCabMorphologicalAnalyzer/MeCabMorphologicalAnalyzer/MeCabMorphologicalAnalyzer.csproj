@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Morpheme.cs" />
-    <Compile Include="MorphologicalAnalyzer.cs" />
+    <Compile Include="MeCabMorphologicalAnalyzer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
