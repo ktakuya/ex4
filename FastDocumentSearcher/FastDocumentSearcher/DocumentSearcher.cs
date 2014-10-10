@@ -70,4 +70,22 @@ namespace FastDocumentSearcher
             _body = body;
         }
     }
+
+    /// <summary>
+    /// ベクトル空間での類似度計算クラス
+    /// </summary>
+    class VectorSimilarity
+    {
+        private int[] _v1, _v2;
+
+        public VectorSimilarity(int[] v1, int[] v2){
+            _v1 = v1;
+            _v2 = v2;
+        }
+
+        public double Cosine()
+        {
+
+        }
+    }
 }
