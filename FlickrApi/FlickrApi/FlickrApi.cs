@@ -81,15 +81,19 @@ namespace FlickrApi
             // List<string> a = GetTags(photos[0].Attributes[0].InnerText);
             foreach (XmlNode photo in photos)
             {
-                // [0] : id, [1] : owner, [2] : secret, [3] : server, [4] : farm, [5] : title, 
                 XmlAttributeCollection xac = photo.Attributes;
                 string photoId = xac.GetNamedItem("id").Value;
                 string ownerId = xac.GetNamedItem("owner").Value;
 
                 // photo_id から タグを取得する
                 List<string> tags = GetTags(photoId);
-                string ownerName = GetOwner(ownerId);
+                
+                // useridからusernameを取り出す
+                string userName = GetOwner(ownerId);
+                
+
             }
+            
         }
 
         /// <summary>
@@ -119,10 +123,15 @@ namespace FlickrApi
         /// useridからuserについての詳細を取得してくるメソッド
         /// </summary>
         /// <param name="userid">user_id</param>
-        /// <returns></returns>
+        /// <returns>username</returns>
         private string GetOwner(string userid)
         {
-            string url = 
+            // urlを生成してxmlを取得
+            string url = PeopleGetInfoUrlBuilder(userid);
+            XmlDocument xml = GetXmlDocumentFromUrl(url);
+            
+            // usernameタグの中身をとりだして返す
+            return xml.GetElementsByTagName("username")[0].InnerText;
         }
 
         /// <summary>
