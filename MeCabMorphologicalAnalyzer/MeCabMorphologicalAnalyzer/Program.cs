@@ -14,6 +14,13 @@ namespace MeCabMorphologicalAnalyzer
             string str = "今日はいい天気です";
             MeCabMorphologicalAnalyzer analyser = new MeCabMorphologicalAnalyzer();
             List<Morpheme> result = analyser.Analyse(str);
+
+            /*
+            foreach (Morpheme m in result)
+            {
+                Console.WriteLine(m.ToString());
+            }
+             */
         }
     }
 }
