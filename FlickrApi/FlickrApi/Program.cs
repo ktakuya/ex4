@@ -10,6 +10,7 @@ namespace FlickrApi
     {
         static void Main(string[] args)
         {
+            string key = "2b4f6b0fb919de79b3e9595a909d4845";
         }
     }
 }
