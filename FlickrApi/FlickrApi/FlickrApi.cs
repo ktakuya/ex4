@@ -81,6 +81,7 @@ namespace FlickrApi
             // List<string> a = GetTags(photos[0].Attributes[0].InnerText);
             foreach (XmlNode photo in photos)
             {
+                // attributeからidとownerを取り出してきてFlickrImageインスタンスを生成する
                 XmlAttributeCollection xac = photo.Attributes;
                 string photoId = xac.GetNamedItem("id").Value;
                 string ownerId = xac.GetNamedItem("owner").Value;
@@ -155,6 +156,23 @@ namespace FlickrApi
                 result.Add(xac.GetNamedItem("raw").Value);
             }
             return result;
+        }
+
+        /// <summary>
+        /// Photo Source URLを生成するメソッド
+        /// </summary>
+        /// <param name="farmId">farm-id</param>
+        /// <param name="serverId">server-id</param>
+        /// <param name="id">id</param>
+        /// <param name="secret">secret</param>
+        /// <returns>url</returns>
+        private string PhotoSourceUrlBuilder(string farmId, string serverId, string id, string secret)
+        {
+            return string.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg",
+                                                farmId,
+                                                serverId,
+                                                id,
+                                                secret);
         }
 
         /// <summary>
