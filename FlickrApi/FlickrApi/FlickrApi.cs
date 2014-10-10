@@ -75,7 +75,9 @@ namespace FlickrApi
 
             // photoタグをまわしてownerとtagsを取得してくる
             // Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0].InnerText);
+            Console.WriteLine(xml.GetElementsByTagName("photo")[0].Attributes[0]);
             XmlNodeList photos = xml.GetElementsByTagName("photo");
+            List<string> a = GetTags(photos[0].Attributes[0].InnerText);
             foreach (XmlNode photo in photos)
             {
                 // [0] : id, [1] : owner, [2] : secret, [3] : server, [4] : farm, [5] : title, 
@@ -115,12 +117,25 @@ namespace FlickrApi
         }
 
         /// <summary>
-        /// 
+        /// photo_idを指定してその画像に付随するタグをリストにして返すメソッド
         /// </summary>
-        private List<string> GetTags(string id)
+        /// <param name="photoid">photo_id</param>
+        /// <returns>タグをstringにしたリスト</returns>
+        private List<string> GetTags(string photoid)
         {
             List<string> result = new List<string>();
 
+            string url = TagsGetListPhotoUrlBuilder(photoid);
+            XmlDocument xml = GetXmlDocumentFromUrl(url);
+            XmlNodeList tagsList = xml.GetElementsByTagName("tag");
+
+            // foreachでtag内のraw属性をListに突っ込む
+            foreach (XmlNode tag in tagsList)
+            {
+                // raw の属性値を取得
+                XmlAttributeCollection xac = tag.Attributes;
+                result.Add(xac.GetNamedItem("raw").Value);
+            }
             return result;
         }
 
