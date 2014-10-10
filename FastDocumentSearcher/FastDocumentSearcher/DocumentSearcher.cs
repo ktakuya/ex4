@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TkVector;
+using NMeCab;
 
 namespace FastDocumentSearcher
 {
@@ -11,13 +13,16 @@ namespace FastDocumentSearcher
     /// </summary>
     class DocumentSearcher
     {
+
+        private List<Document> _docs;
+
         /// <summary>
         /// コンストラクタ 
         /// </summary>
         /// <param name="docs">検索対象であるDocumentクラスからなる文書のリスト</param>
         public DocumentSearcher(List<Document> docs)
         {
-
+            _docs = docs;
         }
 
         /// <summary>
@@ -76,16 +81,16 @@ namespace FastDocumentSearcher
     /// </summary>
     class VectorSimilarity
     {
-        private int[] _v1, _v2;
+        Vector _v1, _v2;
 
-        public VectorSimilarity(int[] v1, int[] v2){
-            _v1 = v1;
-            _v2 = v2;
+        public VectorSimilarity(double[] v1, double[] v2){
+            _v1 = new Vector(v1);
+            _v2 = new Vector(v2);
         }
 
         public double Cosine()
         {
-
+            return _v1.InnerProduct(_v2) / (_v1.Norm() * _v2.Norm());
         }
     }
 }
