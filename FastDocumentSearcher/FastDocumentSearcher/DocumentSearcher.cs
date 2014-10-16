@@ -51,7 +51,11 @@ namespace FastDocumentSearcher
             // すべてのDocumentに対してbodyをMeCabで解析してある単語の出現するインデックスを抽出する
             for (int i = 0; i < _docs.Count; i++ )
             {
+                Console.WriteLine(i);
+                // 本文を形態素解析
                 List<Morpheme> morphemes = analyzer.Analyse(_docs[i].Body);
+                
+                // 得られた形態素から転置インデックスを作成
                 for (int j = 0; j < morphemes.Count; j++)
                 {
                     string surface = morphemes[j].Surface;
@@ -71,6 +75,7 @@ namespace FastDocumentSearcher
                 }
             }
 
+            // 以下デバッグコード
             foreach (string k in invertedIndex.Keys)
             {
                 Console.WriteLine("-----\n{0}", k);
@@ -80,6 +85,8 @@ namespace FastDocumentSearcher
                 }
                 Console.WriteLine("-----");
             }
+            //
+
         }
 
     }
