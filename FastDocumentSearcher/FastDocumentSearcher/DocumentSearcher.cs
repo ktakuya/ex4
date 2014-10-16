@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TkVector;
 using NMeCab;
+using MeCabMorphologicalAnalyzer;
 
 namespace FastDocumentSearcher
 {
@@ -15,6 +16,7 @@ namespace FastDocumentSearcher
     {
 
         private List<Document> _docs;
+        private Dictionary<string, Dictionary<int, int>> invertedIndex;
 
         /// <summary>
         /// コンストラクタ 
@@ -23,6 +25,7 @@ namespace FastDocumentSearcher
         public DocumentSearcher(List<Document> docs)
         {
             _docs = docs;
+            InitInverseIndex();
         }
 
         /// <summary>
@@ -33,47 +36,52 @@ namespace FastDocumentSearcher
         public List<Document> Search(string query)
         {
             List<Document> documentList = new List<Document>();
+            
             return documentList;
         }
 
-    }
-
-
-    /// <summary>
-    /// タイトルと本文を持つドキュメントクラス
-    /// </summary>
-    class Document
-    {
-
-        private string _title;
-        private string _body;
-
-        /// <summary>
-        /// プロパティ
-        /// </summary>
-        public string Title
+        private void InitInverseIndex()
         {
-            get { return _title; }
+            // 転置インデックスを生成する
+            invertedIndex = new Dictionary<string, Dictionary<int, int>>();
+            
+            // 形態素解析クラスのインスタンス
+            MeCabMorphologicalAnalyzer.MeCabMorphologicalAnalyzer analyzer = new MeCabMorphologicalAnalyzer.MeCabMorphologicalAnalyzer();
+            
+            // すべてのDocumentに対してbodyをMeCabで解析してある単語の出現するインデックスを抽出する
+            for (int i = 0; i < _docs.Count; i++ )
+            {
+                List<Morpheme> morphemes = analyzer.Analyse(_docs[i].Body);
+                for (int j = 0; j < morphemes.Count; j++)
+                {
+                    string surface = morphemes[j].Surface;
+                    if (invertedIndex.ContainsKey(surface))
+                    {
+                        if (!invertedIndex[surface].ContainsKey(i))
+                        {
+                            invertedIndex[surface][i] = 0;
+                        }
+                        invertedIndex[surface][i] += 1;
+                    }
+                    else
+                    {
+                        invertedIndex[surface] = new Dictionary<int, int>();
+                        invertedIndex[surface][i] = 1;
+                    }
+                }
+            }
+
+            foreach (string k in invertedIndex.Keys)
+            {
+                Console.WriteLine("-----\n{0}", k);
+                foreach (KeyValuePair<int, int> pair in invertedIndex[k])
+                {
+                    Console.WriteLine("{0} - 回数 {1}", pair.Key, pair.Value);
+                }
+                Console.WriteLine("-----");
+            }
         }
 
-        /// <summary>
-        /// プロパティ
-        /// </summary>
-        public string Body
-        {
-            get { return _body; }
-        }
-
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <param name="title">文書のタイトル</param>
-        /// <param name="body">文書の本文</param>
-        public Document(string title, string body)
-        {
-            _title = title;
-            _body = body;
-        }
     }
 
     /// <summary>

@@ -44,7 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Document.cs" />
     <Compile Include="DocumentSearcher.cs" />
+    <Compile Include="MeCabMorphologicalAnalyzer.cs" />
+    <Compile Include="Morpheme.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vector.cs" />
