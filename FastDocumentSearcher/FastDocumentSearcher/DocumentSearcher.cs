@@ -36,9 +36,65 @@ namespace FastDocumentSearcher
         public List<Document> Search(string query)
         {
             List<Document> documentList = new List<Document>();
+            double[] originalVector;
+            string[] keywords;
+
+            // query を形態素解析
+            MeCabMorphologicalAnalyzer.MeCabMorphologicalAnalyzer mcma = new MeCabMorphologicalAnalyzer.MeCabMorphologicalAnalyzer();
+            List<Morpheme> morphemes = mcma.Analyse(query);
+
+            // Queryのベクトルを生成する
+            Dictionary<string, double> queryVector = new Dictionary<string, double>();
+            for (int i = 0; i < morphemes.Count; i++)
+            {
+                string surface = morphemes[i].Surface;
+                if (queryVector.ContainsKey(surface))
+                {
+                    queryVector[surface] += 1.0;
+                }
+                else
+                {
+                    queryVector[surface] = 1.0;
+                }
+             }
+            // doubleの配列に変換する
+            originalVector = new double[queryVector.Keys.Count];
+            keywords = new string[queryVector.Keys.Count];
             
+            // keywordsにはqueryの単語 originalVectorにはそのkeywordsの順に出現回数
+            int cnt = 0;
+            foreach (KeyValuePair<string, double> pair in queryVector)
+            {
+                originalVector[cnt] = pair.Value;
+                keywords[cnt] = pair.Key;
+                cnt++;
+            }
+
+            // 文書同士の類似度比較用のリスト vectors[i][j] := i番目の文書のj番目の品詞の出現回数
+            double[,] vectors = new double[_docs.Count, morphemes.Count];
+ 
+            // 全文書についてqueryのワードを含むかチェック
+            for (int i = 0; i < _docs.Count; i++)
+            {
+                for (int j = 0; j < morphemes.Count; j++)
+                {
+                    string surface = morphemes[j].Surface;
+                    // 含む場合、出現回数をベクトルの要素にする. 含まない場合0.0
+                    if (invertedIndex[surface].ContainsKey(i))
+                    {
+                        vectors[i, j] = (double)invertedIndex[surface][i];
+                    }
+                    else
+                    {
+                        vectors[i, j] = 0.0;
+                    }
+                }
+            }
+            
+            // ベクトル同士の類似度を計算して
             return documentList;
         }
+
 
         private void InitInverseIndex()
         {
