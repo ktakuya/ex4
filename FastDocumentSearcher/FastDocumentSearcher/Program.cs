@@ -22,9 +22,11 @@ namespace FastDocumentSearcher
             string query = "京都 ソート";
             List<Document> rankedDoc = ds.Search(query);
             // Test t = new Test();
-            Console.WriteLine(rankedDoc[0].Title);
+            //Console.WriteLine(rankedDoc[0].Title);
         }
 
+
+        // Test用のクラス
         class Test { 
             public Test()
             {
@@ -38,6 +40,7 @@ namespace FastDocumentSearcher
                 int cnt = 0;
                 foreach (XmlNode doc in docs)
                 {
+                    // 100件までしか転置インデックスを生成しません
                     if (cnt++ == 100) break;
                     IEnumerator ienum = doc.GetEnumerator();
                     XmlNode item;
@@ -58,7 +61,8 @@ namespace FastDocumentSearcher
                 }
 
                 DocumentSearcher ds = new DocumentSearcher(documents);
-                ds.Search("りんご みかん みかん");
+                List<Document> l = ds.Search("東京 銀行　京都");
+                Console.WriteLine(l[0].Title);
             }
 
             private XmlDocument GetXmlDocumentFromUrl(string url)

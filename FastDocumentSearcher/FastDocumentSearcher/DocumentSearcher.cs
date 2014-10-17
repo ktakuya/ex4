@@ -47,6 +47,8 @@ namespace FastDocumentSearcher
             for (int i = 0; i < morphemes.Count; i++)
             {
                 string surface = morphemes[i].Surface;
+                // 品詞が名詞以外なら飛ばす
+                if (morphemes[i].Pos != "名詞") continue;
                 if (queryVector.ContainsKey(surface))
                 {
                     queryVector[surface] += 1.0;
@@ -115,6 +117,12 @@ namespace FastDocumentSearcher
             return GetRankedDocument(originalVector, vectors);
         }
 
+        /// <summary>
+        /// ランキングされたDocumentのリストを返す
+        /// </summary>
+        /// <param name="query">queryのベクトル</param>
+        /// <param name="documents">全文書のベクトル</param>
+        /// <returns>ランキングされたリスト</returns>
         private List<Document> GetRankedDocument(double[] query, List<List<double>> documents)
         {
             // 返すDocumentのリスト
@@ -147,7 +155,9 @@ namespace FastDocumentSearcher
             return docs;
         }
 
-
+        /// <summary>
+        /// 転置インデックスを作成する
+        /// </summary>
         private void InitInverseIndex()
         {
             // 転置インデックスを生成する
@@ -167,6 +177,9 @@ namespace FastDocumentSearcher
                 for (int j = 0; j < morphemes.Count; j++)
                 {
                     string surface = morphemes[j].Surface;
+                    // 品詞が名詞以外なら飛ばす
+                    if (morphemes[j].Pos != "名詞") continue;
+
                     if (invertedIndex.ContainsKey(surface))
                     {
                         if (!invertedIndex[surface].ContainsKey(i))
@@ -183,7 +196,7 @@ namespace FastDocumentSearcher
                 }
             }
 
-            // 以下デバッグコード
+            /* 以下デバッグコード
             foreach (string k in invertedIndex.Keys)
             {
                 Console.WriteLine("-----\n{0}", k);
@@ -193,7 +206,7 @@ namespace FastDocumentSearcher
                 }
                 Console.WriteLine("-----");
             }
-            //
+            */
 
         }
 
