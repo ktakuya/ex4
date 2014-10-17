@@ -33,8 +33,10 @@ namespace FastDocumentSearcher
                 xml.Load("select10000.xml");
                 XmlNodeList docs = xml.GetElementsByTagName("doc");
 
+                int cnt = 0;
                 foreach (XmlNode doc in docs)
                 {
+                    if (cnt++ == 100) break;
                     IEnumerator ienum = doc.GetEnumerator();
                     XmlNode item;
                     string body = "", title = "";
@@ -54,7 +56,7 @@ namespace FastDocumentSearcher
                 }
 
                 DocumentSearcher ds = new DocumentSearcher(documents);
-
+                ds.Search("りんご みかん みかん");
             }
 
             private XmlDocument GetXmlDocumentFromUrl(string url)

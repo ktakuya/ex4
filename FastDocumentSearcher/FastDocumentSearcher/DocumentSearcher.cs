@@ -70,29 +70,81 @@ namespace FastDocumentSearcher
                 cnt++;
             }
 
-            // 文書同士の類似度比較用のリスト vectors[i][j] := i番目の文書のj番目の品詞の出現回数
-            double[,] vectors = new double[_docs.Count, morphemes.Count];
- 
+            //debug
+            for (int i = 0; i < originalVector.Length; i++ )
+            {
+                Console.WriteLine("{0} - {1}", keywords[i], originalVector[i]);
+            }
+
+            // 文書同士の類似度比較用のリスト vectors[i][j] := i番目のベクトルのTF-IDFによるベクトル表現
+            // double[,] vectors = new double[_docs.Count, morphemes.Count];
+            List<List<double>> vectors = new List<List<double>>();
+
             // 全文書についてqueryのワードを含むかチェック
             for (int i = 0; i < _docs.Count; i++)
             {
-                for (int j = 0; j < morphemes.Count; j++)
+                vectors.Add(new List<double>());
+                for (int j = 0; j < keywords.Length; j++)
                 {
-                    string surface = morphemes[j].Surface;
+                    string surface = keywords[j];
+                    
+                    // そもそもqueryのワードをひとつも含まない場合
+                    if (!invertedIndex.ContainsKey(surface))
+                    {
+                        vectors[i].Add(0.0);
+                        continue;
+                    }
                     // 含む場合、出現回数をベクトルの要素にする. 含まない場合0.0
                     if (invertedIndex[surface].ContainsKey(i))
                     {
-                        vectors[i, j] = (double)invertedIndex[surface][i];
+                        // 文書 i でのsurfaceの頻度
+                        double tf = (double)invertedIndex[surface][i];
+
+                        // surfaceを含む文書数の逆
+                        double idf = Math.Log((double)_docs.Count / (double)invertedIndex[surface].Keys.Count);
+
+                        vectors[i].Add(tf * idf);
                     }
                     else
                     {
-                        vectors[i, j] = 0.0;
+                        vectors[i].Add(0.0);
                     }
                 }
             }
             
-            // ベクトル同士の類似度を計算して
+            // queryと全文書間の類似度を計算して順位付けする
+
             return documentList;
+        }
+
+        private List<Document> GetRankedDocument(double[] query, List<List<double>> documents)
+        {
+            // 返すDocumentのリスト
+            List<Document> docs = new List<Document>();
+
+            // Key: 何番目の文書か Value: queryとの類似度
+            Dictionary<int, double> similarity = new Dictionary<int, double>();
+            
+            // 類似度計算
+            for (int i = 0; i < documents.Count; i++)
+            {
+                VectorSimilarity vs = new VectorSimilarity(query, documents[i].ToArray());
+                similarity[i] = vs.Cosine();
+            }
+
+            // Valueでソート
+            List<KeyValuePair<int, double>> list = new List<KeyValuePair<int, double>>(similarity);
+            list.Sort(( kvp1, kvp2) =>
+                {
+                    return kvp2.Value.CompareTo(kvp2.Value);
+                });
+
+            foreach (KeyValuePair<int, double> kvp in list)
+            {
+                docs.Add(_docs[kvp.Key]);
+            }
+
+            return docs;
         }
 
 
