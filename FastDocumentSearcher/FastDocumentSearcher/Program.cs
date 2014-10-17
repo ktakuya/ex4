@@ -15,12 +15,14 @@ namespace FastDocumentSearcher
         static void Main(string[] args)
         {
             List<Document> docs = new List<Document>();
-            docs.Add(new Document("タイトル", "ソート済みのハッシュテーブルの利用")); // 文書群作成
-            docs.Add(new Document("title2", "すべてのソートを利用"));
+            docs.Add(new Document("title1", "ソート済みのハッシュテーブルの利用")); // 文書群作成
+            docs.Add(new Document("title3", "すべてのソートを利用京都"));
+            docs.Add(new Document("title2", "すべてを利用京都京都"));
             DocumentSearcher ds = new DocumentSearcher(docs);
-            string query = "京都";
+            string query = "京都 ソート";
             List<Document> rankedDoc = ds.Search(query);
-            Test t = new Test();
+            // Test t = new Test();
+            Console.WriteLine(rankedDoc[0].Title);
         }
 
         class Test { 
