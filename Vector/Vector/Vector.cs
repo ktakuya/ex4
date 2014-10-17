@@ -207,7 +207,7 @@ namespace Vector
             {
                 result += this.GetValue(i + 1) * this.GetValue(i + 1);
             }
-            return result;
+            return Math.Sqrt(result);
         }
 
 
