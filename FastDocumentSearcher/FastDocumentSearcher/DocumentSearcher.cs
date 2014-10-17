@@ -35,7 +35,6 @@ namespace FastDocumentSearcher
         /// <returns>関連性が高い順にランキングされたDocumentクラスのリスト</returns>
         public List<Document> Search(string query)
         {
-            List<Document> documentList = new List<Document>();
             double[] originalVector;
             string[] keywords;
 
@@ -113,8 +112,7 @@ namespace FastDocumentSearcher
             }
             
             // queryと全文書間の類似度を計算して順位付けする
-
-            return documentList;
+            return GetRankedDocument(originalVector, vectors);
         }
 
         private List<Document> GetRankedDocument(double[] query, List<List<double>> documents)
@@ -124,19 +122,21 @@ namespace FastDocumentSearcher
 
             // Key: 何番目の文書か Value: queryとの類似度
             Dictionary<int, double> similarity = new Dictionary<int, double>();
-            
+
+            Console.WriteLine("--- 類似度 ---");
             // 類似度計算
             for (int i = 0; i < documents.Count; i++)
             {
                 VectorSimilarity vs = new VectorSimilarity(query, documents[i].ToArray());
                 similarity[i] = vs.Cosine();
+                Console.WriteLine("{0} - {1}", i, similarity[i]);
             }
 
-            // Valueでソート
+            // Valueでソート 降順にする
             List<KeyValuePair<int, double>> list = new List<KeyValuePair<int, double>>(similarity);
             list.Sort(( kvp1, kvp2) =>
                 {
-                    return kvp2.Value.CompareTo(kvp2.Value);
+                    return kvp2.Value.CompareTo(kvp1.Value);
                 });
 
             foreach (KeyValuePair<int, double> kvp in list)
