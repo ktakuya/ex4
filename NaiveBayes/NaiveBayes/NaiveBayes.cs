@@ -105,7 +105,7 @@ namespace NaiveBayes
 
             for (int i = 0; i < data.Dimension; i++)
             {
-                ans += (data.GetValue(i+1) * probForWord(POS, i) / probForWord(NEG, i));
+                ans += data.GetValue(i+1) * Math.Log(probForWord(POS, i) / probForWord(NEG, i));
             }
 
             if (ans > 0)
