@@ -11,10 +11,10 @@ namespace FaceDetection
     {
         static void Main(string[] args)
         {
-            Bitmap src = new Bitmap("Lenna.bmp");
+            Bitmap src = new Bitmap("face1.jpg");
             FaceDetection extract = new FaceDetection();
             Bitmap dst = extract.Extract(src);
-            dst.Save("output.bmp");
+            dst.Save("output.jpg");
         }
     }
 }
