@@ -10,6 +10,8 @@ namespace MeCabMorphologicalAnalyzer
     class MeCabMorphologicalAnalyzer
     {
        /// <summary>
+       /// 優[imamori]
+       /// 
        /// コンストラクタ
        /// </summary>
         public MeCabMorphologicalAnalyzer() { }
