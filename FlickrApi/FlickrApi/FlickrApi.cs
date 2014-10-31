@@ -11,6 +11,7 @@ namespace FlickrApi
 {
     /// <summary>
     /// Flickr API を利用した写真検索クラス
+    /// 優 [yamamoto]
     /// </summary>
     class FlickrApi
     {
