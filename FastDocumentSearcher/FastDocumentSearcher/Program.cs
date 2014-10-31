@@ -21,8 +21,8 @@ namespace FastDocumentSearcher
             DocumentSearcher ds = new DocumentSearcher(docs);
             string query = "京都 ソート";
             List<Document> rankedDoc = ds.Search(query);
-            // Test t = new Test();
-            //Console.WriteLine(rankedDoc[0].Title);
+            //Test t = new Test();
+            // Console.WriteLine(rankedDoc[0].Title);
         }
 
 

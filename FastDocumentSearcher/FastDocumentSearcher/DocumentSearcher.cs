@@ -10,7 +10,14 @@ using MeCabMorphologicalAnalyzer;
 namespace FastDocumentSearcher
 {
     /// <summary>
+    /// 可 [yamamoto]
     /// 文書群に対する高速な検索クラス
+    /// 1. Search()内で、クエリの単語を含むかの判定を、全文書に対して行っているが、
+    ///    それだと転置インデックスを作成した効果は薄い。
+    ///    （文書が100万件くらいある場合を想像してみてください）
+    ///    転置インデックスを利用すれば、クエリを含む文書集合はすぐに求まるはず。
+    /// 2. また、類似度計算もクエリを含む文書についてのみ行えばよい。
+    ///    それ以外の文書とクエリの類似度は0.0
     /// </summary>
     class DocumentSearcher
     {
@@ -79,42 +86,36 @@ namespace FastDocumentSearcher
 
             // 文書同士の類似度比較用のリスト vectors[i][j] := i番目のベクトルのTF-IDFによるベクトル表現
             // double[,] vectors = new double[_docs.Count, morphemes.Count];
-            List<List<double>> vectors = new List<List<double>>();
+            // List<List<double>> vectors = new List<List<double>>();
+            // 文書のインデックスをキーにしてkeywordの各TF-IDFベクトルとして保持する
+            Dictionary<int, double[]> vectors = new Dictionary<int, double[]>();
 
-            // 全文書についてqueryのワードを含むかチェック
-            for (int i = 0; i < _docs.Count; i++)
+            // 転置インデックスからkeywordsをキーとした出現頻度のディクショナリを取得する
+            for (int key = 0; key < keywords.Length; key++)
             {
-                vectors.Add(new List<double>());
-                for (int j = 0; j < keywords.Length; j++)
+                string word = keywords[key];
+                if (!invertedIndex.ContainsKey(word)) continue;
+
+                Dictionary<int, int> wordList = invertedIndex[word];
+                foreach (KeyValuePair<int, int> pair in wordList)
                 {
-                    string surface = keywords[j];
-                    
-                    // そもそもqueryのワードをひとつも含まない場合
-                    if (!invertedIndex.ContainsKey(surface))
+                    // キーが存在しなければベクトルを追加して初期化
+                    if (!vectors.ContainsKey(pair.Key))
                     {
-                        vectors[i].Add(0.0);
-                        continue;
+                        vectors[pair.Key] = new double[keywords.Length];
+                        for (int i = 0; i < keywords.Length; i++)
+                            vectors[pair.Key][i] = 0.0;
                     }
-                    // 含む場合、出現回数をベクトルの要素にする. 含まない場合0.0
-                    if (invertedIndex[surface].ContainsKey(i))
-                    {
-                        // 文書 i でのsurfaceの頻度
-                        double tf = (double)invertedIndex[surface][i];
 
-                        // surfaceを含む文書数の逆
-                        double idf = Math.Log((double)_docs.Count / (double)invertedIndex[surface].Keys.Count);
-
-                        vectors[i].Add(tf * idf);
-                    }
-                    else
-                    {
-                        vectors[i].Add(0.0);
-                    }
+                    // 文書pari.Keyでの出現頻度
+                    double tf = (double)pair.Value;
+                    // 文書数の逆
+                    double idf = Math.Log((double)_docs.Count / (double)wordList.Keys.Count);
+                    vectors[pair.Key][key] = tf * idf;
                 }
             }
-            
-            // queryと全文書間の類似度を計算して順位付けする
-            return GetRankedDocument(originalVector, vectors);
+
+             return GetRankedDocument(originalVector, vectors);
         }
 
         /// <summary>
@@ -123,29 +124,29 @@ namespace FastDocumentSearcher
         /// <param name="query">queryのベクトル</param>
         /// <param name="documents">全文書のベクトル</param>
         /// <returns>ランキングされたリスト</returns>
-        private List<Document> GetRankedDocument(double[] query, List<List<double>> documents)
+        private List<Document> GetRankedDocument(double[] query, Dictionary<int, double[]> documents)
         {
             // 返すDocumentのリスト
             List<Document> docs = new List<Document>();
-
             // Key: 何番目の文書か Value: queryとの類似度
             Dictionary<int, double> similarity = new Dictionary<int, double>();
+            // すべての類似度を0.0に初期化
+            for (int i = 0; i < _docs.Count; i++)
+                similarity[i] = 0.0;
 
-            Console.WriteLine("--- 類似度 ---");
-            // 類似度計算
-            for (int i = 0; i < documents.Count; i++)
+            // キーワードが存在した文書に対してのみ類似度を計算する
+            foreach (KeyValuePair<int, double[]> pair in documents)
             {
-                VectorSimilarity vs = new VectorSimilarity(query, documents[i].ToArray());
-                similarity[i] = vs.Cosine();
-                Console.WriteLine("{0} - {1}", i, similarity[i]);
+                VectorSimilarity vs = new VectorSimilarity(query, pair.Value);
+                similarity[pair.Key] = vs.Cosine();
             }
 
             // Valueでソート 降順にする
             List<KeyValuePair<int, double>> list = new List<KeyValuePair<int, double>>(similarity);
-            list.Sort(( kvp1, kvp2) =>
-                {
-                    return kvp2.Value.CompareTo(kvp1.Value);
-                });
+            list.Sort((kvp1, kvp2) =>
+            {
+                return kvp2.Value.CompareTo(kvp1.Value);
+            });
 
             foreach (KeyValuePair<int, double> kvp in list)
             {
@@ -154,6 +155,7 @@ namespace FastDocumentSearcher
 
             return docs;
         }
+
 
         /// <summary>
         /// 転置インデックスを作成する
@@ -211,6 +213,7 @@ namespace FastDocumentSearcher
         }
 
     }
+
 
     /// <summary>
     /// ベクトル空間での類似度計算クラス
