@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using FlickrApi;
 using FastDocumentSearcher;
 using FavoInsta;
+using MeCabMorphologicalAnalyzer;
 
 namespace FavoInstaApp
 {
@@ -21,7 +22,7 @@ namespace FavoInstaApp
         private System.Windows.Forms.PictureBox[] picForm;
         private List<Document> searchDocs;
         private FastDocumentSearcher.DocumentSearcher fds;
-        private String[] textForm;
+        private Dictionary<System.Windows.Forms.PictureBox, string> textForm;
 
         public Form1()
         {
@@ -34,7 +35,7 @@ namespace FavoInstaApp
             // picForm に PictureBoxのインスタンスをいれてインデックスで指定できるようにしておく
             picForm = new System.Windows.Forms.PictureBox[9] {pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5,
                                                                                                      pictureBox6, pictureBox7, pictureBox8, pictureBox9};
-            textForm = new String[9];
+            textForm = new Dictionary<System.Windows.Forms.PictureBox, string>();
 
             // 画像のUrlとテキストを持つオブジェクトを取得する
             SQLiteManager sqm = new SQLiteManager();
@@ -48,11 +49,7 @@ namespace FavoInstaApp
 
             fds = new FastDocumentSearcher.DocumentSearcher(searchDocs);
 
-            for (int i = 0; i < 9; i++)
-            {
-                picForm[i].Image = GetImgByUrl(docs[i].Url);
-                textForm[i] = docs[i].Text;
-            }
+            DisplayPhotos();
             
         }
 
@@ -93,7 +90,22 @@ namespace FavoInstaApp
 
         private void pictureBox_Click(object sender, EventArgs e)
         {
+            Console.WriteLine("Click");
+            System.Windows.Forms.PictureBox pcb = (System.Windows.Forms.PictureBox)sender;
+            searchDocs = fds.Search(textForm[pcb]);
+            Console.WriteLine("Search End");
 
+            DisplayPhotos();
+        }
+
+        private void DisplayPhotos()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                picForm[i].Image = GetImgByUrl(searchDocs[i].Title);
+                textForm[picForm[i]] = searchDocs[i].Body;
+            }
+            Console.WriteLine("Display End");
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -101,6 +113,7 @@ namespace FavoInstaApp
 
         }
 
+        
         
     }
 }

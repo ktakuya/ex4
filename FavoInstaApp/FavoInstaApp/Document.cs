@@ -31,6 +31,7 @@ namespace FastDocumentSearcher
             get { return _body; }
         }
 
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
